@@ -20,7 +20,7 @@ pipeline{
             steps{
             gitCheckout(
                 branch: "main",
-                url: "https://github.com/praveen1994dec/Java_app_3.0.git"
+                url: "https://github.com/umersyed98488/Java_app_3.0.git"
             )
             }
         }
@@ -82,13 +82,21 @@ pipeline{
                }
             }
         }
-        
+         stage('Docker Image Scan: trivy '){
+         when { expression {  params.action == 'create' } }
+            steps{
+               script{
+                   
+                   dockerImageScan("${params.ImageName}","${params.ImageTag}","${params.DockerHubUser}")
+               }
+            }
+        }
         stage('Docker Image Push : DockerHub '){
          when { expression {  params.action == 'create' } }
             steps{
                script{
                    
-                   dockerImagePush("${params.ImageName}", "${params.ImageTag}","${params.DockerHubUser}")
+                   dockerImagePush("${params.ImageName}","${params.ImageTag}","${params.DockerHubUser}")
                }
             }
         }   
